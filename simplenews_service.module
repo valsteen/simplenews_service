@@ -1,0 +1,65 @@
+<?php
+// $Id$
+
+/**
+* @file
+* SimpleNews Service to provide service functionality to the Services module.
+*/  
+
+/*
+* Implementation of hook_service()
+*  
+* Required by all service modules. Returns array defining all the methods
+* available in the service
+*/
+
+function toto($mail, $tid, $confirm) {
+    error_log($mail);
+    error_log($tid);
+    error_log($confirm);
+}
+
+function _simplenews_resource_access($op = 'view', $args = array()) {
+    return TRUE;
+}
+
+function simplenews_service_services_resources() {
+    return array(
+        /**
+        * simplenews.subscribe
+        * A service to subscribe to a simplenews mailing list 
+        */
+        'simplenews' => array(
+            'actions' => array(
+                'subscribe' => array(
+                    'callback' => 'simplenews_subscribe_user',
+                    'access callback' => '_simplenews_resource_access',                    
+                    'args' => array(
+                        array(
+                            'name' => 'mail',
+                            'type' => 'string',
+                            'optional' => FALSE,
+                            'description' => 'The e-mail address to subscribe to the newsletter.'
+                        ),
+                        array(
+                            'name' => 'tid',
+                            'type' => 'integer',
+                            'optional' => FALSE,
+                            'description' => 'The term ID of the newsletter.'
+                        ),
+                        array(
+                            'name' => 'confirm',
+                            'type' => 'boolean',
+                            'optional' => TRUE,
+                            'default_value' => TRUE,
+                            'description' => 'Whether we should send a confirmation e-mail and hold off adding this user to the newsletter until he or she clicks the confirm link in the e-mail.'
+                            )
+                        ),
+                        'return' => 'boolean',
+                        'help' => 'Subscribes a user to a mailing list.'
+                    ),
+                )
+            )
+    );
+}
+?>

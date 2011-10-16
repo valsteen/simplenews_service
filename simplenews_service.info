@@ -1,0 +1,6 @@
+name = "Simplenews Service"
+description = "Provides a service for the Services module to use Simplenews."
+core = 6.x
+package = "Services - services"
+dependencies[] = simplenews
+dependencies[] = services
