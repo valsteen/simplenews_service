@@ -17,6 +17,10 @@ function _user_resource_retrieve_by_email($email) {
     return user_load(array('mail' => $email))->uid;
 }
 
+function _user_resource_retrieve_by_username($username) {
+    return user_load(array('name' => $username))->uid;
+}
+
 function simplenews_service_services_resources() {
     return array(
         /**
@@ -48,8 +52,7 @@ function simplenews_service_services_resources() {
                             'optional' => TRUE,
                             'default_value' => TRUE,
                             'description' => 'Whether we should send a confirmation e-mail and hold off adding this user to the newsletter until he or she clicks the confirm link in the e-mail.'
-                            )
-                        ),
+                            ),
                         array(
                             'name' => 'language',
                             'type' => 'string',
@@ -90,6 +93,7 @@ function simplenews_service_services_resources() {
                     ),
                 ),
             ),
+        ),
         'user' => array(
             'actions' => array(
                 'by_email' => array(
@@ -102,6 +106,19 @@ function simplenews_service_services_resources() {
                             'name' => 'email',
                             'type' => 'string',
                             'description' => "user's email",
+                            'optional' => False
+                        )
+                    )
+                ),
+                'by_username' => array(
+                    'help' => 'retrieves a user by username',
+                    'callback' => '_user_resource_retrieve_by_username',
+                    'access callback' => 'user_access',
+                    'access arguments' => array('access user profiles'),
+                    'args' => array(
+                        array(
+                            'name' => 'username',
+                            'type' => 'string',
                             'optional' => False
                         )
                     )
