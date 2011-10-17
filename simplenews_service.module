@@ -13,8 +13,8 @@
 * available in the service
 */
 
-function _simplenews_resource_access($op = 'view', $args = array()) {
-    return TRUE;
+function _user_resource_retrieve_by_email($email) {
+    return user_load(array('mail' => $email))->uid;
 }
 
 function simplenews_service_services_resources() {
@@ -27,7 +27,8 @@ function simplenews_service_services_resources() {
             'actions' => array(
                 'subscribe' => array(
                     'callback' => 'simplenews_subscribe_user',
-                    'access callback' => '_simplenews_resource_access',                    
+                    'access callback' => 'user_access',
+                    'access arguments' => array('administer newsletters'),
                     'args' => array(
                         array(
                             'name' => 'mail',
@@ -49,11 +50,65 @@ function simplenews_service_services_resources() {
                             'description' => 'Whether we should send a confirmation e-mail and hold off adding this user to the newsletter until he or she clicks the confirm link in the e-mail.'
                             )
                         ),
+                        array(
+                            'name' => 'language',
+                            'type' => 'string',
+                            'optional' => TRUE,
+                            'default_value' => 'fr',
+                            'description' => 'preferred language'
+                            )
+                        ),
                         'return' => 'boolean',
                         'help' => 'Subscribes a user to a mailing list.'
                     ),
+                'unsubscribe' => array(
+                    'callback' => 'simplenews_unsubscribe_user',
+                    'access callback' => 'user_access',
+                    'access arguments' => array('administer newsletters'),
+                    'args' => array(
+                        array(
+                            'name' => 'mail',
+                            'type' => 'string',
+                            'optional' => FALSE,
+                            'description' => 'The e-mail address to unsubscribe to the newsletter.'
+                        ),
+                        array(
+                            'name' => 'tid',
+                            'type' => 'integer',
+                            'optional' => FALSE,
+                            'description' => 'The term ID of the newsletter.'
+                        ),
+                        array(
+                            'name' => 'confirm',
+                            'type' => 'boolean',
+                            'optional' => TRUE,
+                            'default_value' => TRUE,
+                            'description' => 'Whether we should send a confirmation e-mail and hold off adding this user to the newsletter until he or she clicks the confirm link in the e-mail.'
+                        ),
+                        'return' => 'boolean',
+                        'help' => 'Unsubscribes a user from a mailing list.'
+                    ),
+                ),
+            ),
+        'user' => array(
+            'actions' => array(
+                'by_email' => array(
+                    'help' => 'retrieves a user by email',
+                    'callback' => '_user_resource_retrieve_by_email',
+                    'access callback' => 'user_access',
+                    'access arguments' => array('access user profiles'),
+                    'args' => array(
+                        array(
+                            'name' => 'email',
+                            'type' => 'string',
+                            'description' => "user's email",
+                            'optional' => False
+                        )
+                    )
                 )
             )
+        )
     );
+
 }
 ?>
