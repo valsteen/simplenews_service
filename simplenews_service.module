@@ -13,12 +13,6 @@
 * available in the service
 */
 
-function toto($mail, $tid, $confirm) {
-    error_log($mail);
-    error_log($tid);
-    error_log($confirm);
-}
-
 function _simplenews_resource_access($op = 'view', $args = array()) {
     return TRUE;
 }
