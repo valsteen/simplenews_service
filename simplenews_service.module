@@ -59,11 +59,26 @@ function simplenews_service_services_resources() {
                             'optional' => TRUE,
                             'default_value' => 'fr',
                             'description' => 'preferred language'
-                            )
-                        ),
+                            ),
                         'return' => 'boolean',
                         'help' => 'Subscribes a user to a mailing list.'
+			),
                     ),
+                'subscriptions' => array(
+                    'callback' => 'simplenews_get_subscription_service',
+                    'access callback' => 'user_access',
+                    'access arguments' => array('administer newsletters'),
+                    'args' => array(
+                        array(
+                            'name' => 'mail',
+                            'type' => 'string',
+                            'optional' => FALSE,
+                            'description' => 'The e-mail address to lookup.'
+                        ),
+                    ),
+		    'return' => 'array',
+		    'help' => 'Lists subscriptions for a given mail address'
+		),
                 'unsubscribe' => array(
                     'callback' => 'simplenews_unsubscribe_user',
                     'access callback' => 'user_access',
@@ -88,9 +103,9 @@ function simplenews_service_services_resources() {
                             'default_value' => TRUE,
                             'description' => 'Whether we should send a confirmation e-mail and hold off adding this user to the newsletter until he or she clicks the confirm link in the e-mail.'
                         ),
-                        'return' => 'boolean',
-                        'help' => 'Unsubscribes a user from a mailing list.'
                     ),
+		    'return' => 'boolean',
+                    'help' => 'Unsubscribes a user from a mailing list.'
                 ),
             ),
         ),
@@ -127,5 +142,10 @@ function simplenews_service_services_resources() {
         )
     );
 
+}
+
+function simplenews_get_subscription_service($email) {
+    $account = user_load(array('mail' => $email));
+    return simplenews_get_subscription($account);
 }
 ?>
